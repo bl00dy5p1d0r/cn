@@ -1,4 +1,4 @@
-#### Sructs
+# Sructs
 ```c
     struct addrinfo {
         int              ai_flags;     // AI_PASSIVE, AI_CANONNAME, etc.
@@ -12,7 +12,7 @@
         struct addrinfo  ai_next;      // linked list, next node
     };
 ```
-### IPv4
+## IPv4
 ```c
     struct sockaddr {
         unsigned short    sa_family;    // address family, AF_xxx
@@ -30,7 +30,7 @@
         uint32_t s_addr; // that's a 32-bit int (4 bytes)
     };
 ```
-### IPv6
+## IPv6
 ```c
     struct sockaddr_in6 {
         u_int16_t       sin6_family;   // address family, AF_INET6
@@ -44,7 +44,7 @@
         unsigned char   s6_addr[16];   // IPv6 address
     };
 ```
-### IPv4/IPv6
+## IPv4/IPv6
 ```c
     struct sockaddr_storage {
         sa_family_t  ss_family;     // address family
@@ -57,10 +57,10 @@
 ```
 ***
 
-#### API
+# API
 
-### Fill IP Addr
-## Presentation to Network Conversion
+## Fill IP Addr
+### Presentation to Network Conversion
 ```c
 struct sockaddr_in sa; // IPv4
 struct sockaddr_in6 sa6; // IPv6
@@ -68,10 +68,10 @@ struct sockaddr_in6 sa6; // IPv6
 inet_pton(AF_INET, "10.12.110.57", &(sa.sin_addr)); // IPv4
 inet_pton(AF_INET6, "2001:db8:63b3:1::3490", &(sa6.sin6_addr)); // IPv6
 ```
-### IP Addr to Presentation
-## Network to Presentation Conversion
+## IP Addr to Presentation
+###Network to Presentation Conversion
 
-# IPv4:
+#### IPv4:
 ```c
 char ip4[INET_ADDRSTRLEN];  // space to hold the IPv4 string
 struct sockaddr_in sa;      // pretend this is loaded with something
@@ -81,7 +81,7 @@ inet_ntop(AF_INET, &(sa.sin_addr), ip4, INET_ADDRSTRLEN);
 printf("The IPv4 address is: %s\n", ip4);
 ```
 
-# IPv6:
+#### IPv6:
 ```c
 char ip6[INET6_ADDRSTRLEN]; // space to hold the IPv6 string
 struct sockaddr_in6 sa6;    // pretend this is loaded with something
@@ -132,7 +132,7 @@ status = getaddrinfo("www.example.net", "3490", &hints, &servinfo);
 // servinfo now points to a linked list of 1 or more struct addrinfos
 
 ```
-# Example usage
+#### Example usage
 ```c
 /*
 ** showip.c -- show IP addresses for a host given on the command line
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
 
 int socket(int domain, int type, int protocol); 
 ```
-# Example
+#### Example
 >Using the information provided by getaddrinfo() we call socket() syscall
 ```c
 int s;
@@ -246,7 +246,7 @@ sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 bind(sockfd, res->ai_addr, res->ai_addrlen);
 ```
 
-# Reuse the port
+#### Reuse the port
 ```c
 int yes=1;
 
@@ -256,7 +256,7 @@ if (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) {
     exit(1);
 }
 ```
-# The Old way of doing this thing
+#### The Old way of doing this thing
 ```c
 // !!! THIS IS THE OLD WAY !!!
 
@@ -320,7 +320,7 @@ int listen(int sockfd, int backlog);
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen); 
 ```
 
-# Example
+#### Example
 ```c
 #include <string.h>
 #include <sys/types.h>
@@ -365,18 +365,18 @@ int main(void)
     .
 ```
 ## send() and recv()
-# The send() call
+#### The send() call
 >returns actual bytes sent. Can be less than len
 ```c
 int send(int sockfd, const void *msg, int len, int flags); 
 ```
 
-# The recv() call
+#### The recv() call
 >recv() can return 0 this means remote side has closed the connection
 ```c
 int recv(int sockfd, void *buf, int len, int flags);
 ```
-# Example
+#### Example
 ```c
 char *msg = "Beej was here!";
 int len, bytes_sent;
@@ -390,13 +390,13 @@ bytes_sent = send(sockfd, msg, len, 0);
 ```
 
 ## sendto() and recvfrom()
-# The sendto() call
+#### The sendto() call
 ```c
 int sendto(int sockfd, const void *msg, int len, unsigned int flags,
            const struct sockaddr *to, socklen_t tolen); 
 ```
 
-# The recvfrom() call
+#### The recvfrom() call
 ```c
 int recvfrom(int sockfd, void *buf, int len, unsigned int flags,
              struct sockaddr *from, int *fromlen); 
