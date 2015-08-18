@@ -48,4 +48,5 @@ int main(void)
         printf("#> %s", recv_buffer);
         memset(&recv_buffer, 0, 1024);
     }
+    close(sockfd);
 }

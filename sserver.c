@@ -38,7 +38,7 @@ int main(void)
     }
     listen(sockfd, BACKLOG);
 
-    addr_size = sizeof their_addr;
+    addr_size = sizeof(their_addr);
     while(1) {
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
         client_fds[client_cnt++] = new_fd;
@@ -59,7 +59,7 @@ int main(void)
              char buffer[1024] = {'\0'};
              while(1) {
                  int recv_bytes = 0,i;
-                 if ((recv_bytes = recv(new_fd, buffer, 1023, 0)) == -1) {
+                 if ((recv_bytes = recv(new_fd, buffer, 1024, 0)) == -1) {
                     P_ERROR("recv Failed !")
                  }
                  for(i=0; i<client_cnt; i++) {
