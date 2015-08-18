@@ -406,3 +406,14 @@ int recvfrom(int sockfd, void *buf, int len, unsigned int flags,
 >The socket itself is still a datagram socket and the packets still use UDP, but the socket interface 
 >will automatically add the destination and source information for you.
 
+## close() and shutdown()
+#### shutdown()
+```c
+int shutdown(int sockfd, int how); 
+```
+| 0 | Further receives are disallowed                          |
+| 1 | Further sends are disallowed                             |
+| 3 | Further sends and receives are disallowed (like close()) |
+
+>shutdown() returns 0 on success, and -1 on error (with errno set accordingly.)
+
