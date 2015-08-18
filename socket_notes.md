@@ -121,23 +121,17 @@ freeaddrinfo(servinfo); // free the linked-list
 int status;
 struct addrinfo hints;
 struct addrinfo *servinfo;  // will point to the results
-
 memset(&hints, 0, sizeof hints); // make sure the struct is empty
 hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
 hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
-
 // get ready to connect
 status = getaddrinfo("www.example.net", "3490", &hints, &servinfo);
-
 // servinfo now points to a linked list of 1 or more struct addrinfos
-
 ```
+
 #### Example usage
 ```c
-/*
-** showip.c -- show IP addresses for a host given on the command line
-*/
-
+// showip.c -- show IP addresses for a host given on the command line
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -196,27 +190,26 @@ int main(int argc, char *argv[])
 ```
 ## socket()
 >Returns the socket file descriptor and -1 on error
+
 ```c
 #include <sys/types.h>
 #include <sys/socket.h>
-
 int socket(int domain, int type, int protocol); 
 ```
+
 #### Example
 >Using the information provided by getaddrinfo() we call socket() syscall
+
 ```c
 int s;
 struct addrinfo hints, *res;
-
 // do the lookup
 // [pretend we already filled out the "hints" struct]
 getaddrinfo("www.example.com", "http", &hints, &res);
-
 // [again, you should do error-checking on getaddrinfo(), and walk
 // the "res" linked list looking for valid entries instead of just
 // assuming the first one is good (like many of these examples do.)
 // See the section on client/server for real examples.]
-
 s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 ```
 
@@ -227,29 +220,22 @@ s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 ```c
 struct addrinfo hints, *res;
 int sockfd;
-
 // first, load up address structs with getaddrinfo():
-
 memset(&hints, 0, sizeof hints);
 hints.ai_family = AF_UNSPEC;  // use IPv4 or IPv6, whichever
 hints.ai_socktype = SOCK_STREAM;
 hints.ai_flags = AI_PASSIVE;     // fill in my IP for me
-
 getaddrinfo(NULL, "3490", &hints, &res);
-
 // make a socket:
-
 sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-
 // bind it to the port we passed in to getaddrinfo():
-
 bind(sockfd, res->ai_addr, res->ai_addrlen);
 ```
 
 #### Reuse the port
+
 ```c
 int yes=1;
-
 // lose the pesky "Address already in use" error message
 if (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) {
     perror("setsockopt");
@@ -257,6 +243,7 @@ if (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) {
 }
 ```
 #### The Old way of doing this thing
+
 ```c
 // !!! THIS IS THE OLD WAY !!!
 
@@ -274,6 +261,7 @@ bind(sockfd, (struct sockaddr *)&my_addr, sizeof my_addr);
 ```
 
 ## connect()
+
 ```c
 struct addrinfo hints, *res;
 int sockfd;
@@ -300,8 +288,7 @@ connect(sockfd, res->ai_addr, res->ai_addrlen);
 >socket();
 >bind();
 >listen();
-
-/* accept() goes here */ 
+>/* accept() goes here */ 
 ```c
 int listen(int sockfd, int backlog);
 ```
@@ -321,6 +308,7 @@ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 ```
 
 #### Example
+
 ```c
 #include <string.h>
 #include <sys/types.h>
@@ -367,6 +355,7 @@ int main(void)
 ## send() and recv()
 #### The send() call
 >returns actual bytes sent. Can be less than len
+
 ```c
 int send(int sockfd, const void *msg, int len, int flags); 
 ```
@@ -377,6 +366,7 @@ int send(int sockfd, const void *msg, int len, int flags);
 int recv(int sockfd, void *buf, int len, int flags);
 ```
 #### Example
+
 ```c
 char *msg = "Beej was here!";
 int len, bytes_sent;
@@ -391,12 +381,14 @@ bytes_sent = send(sockfd, msg, len, 0);
 
 ## sendto() and recvfrom()
 #### The sendto() call
+
 ```c
 int sendto(int sockfd, const void *msg, int len, unsigned int flags,
            const struct sockaddr *to, socklen_t tolen); 
 ```
 
 #### The recvfrom() call
+
 ```c
 int recvfrom(int sockfd, void *buf, int len, unsigned int flags,
              struct sockaddr *from, int *fromlen); 
@@ -408,12 +400,15 @@ int recvfrom(int sockfd, void *buf, int len, unsigned int flags,
 
 ## close() and shutdown()
 #### shutdown()
+
 ```c
 int shutdown(int sockfd, int how); 
 ```
-| 0 | Further receives are disallowed                          |
-| 1 | Further sends are disallowed                             |
-| 3 | Further sends and receives are disallowed (like close()) |
+| how   | what it does                                             |
+| :---: | :---:                                                    |
+| 0     | Further receives are disallowed                          |
+| 1     | Further sends are disallowed                             |
+| 3     | Further sends and receives are disallowed (like close()) |
 
 >shutdown() returns 0 on success, and -1 on error (with errno set accordingly.)
 
